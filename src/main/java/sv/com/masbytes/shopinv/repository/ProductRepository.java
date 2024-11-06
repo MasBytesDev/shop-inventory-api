@@ -15,5 +15,7 @@ public interface ProductRepository extends MongoRepository<Product, ObjectId> {
 	List<Product> findByCategory(String category);
 	
 	void deleteByProductCode(String productCode);
+	
+	List<Product> findAll();
 
 }

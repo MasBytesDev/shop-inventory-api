@@ -70,6 +70,11 @@ public class ProductServiceImpl implements ProductService {
 	    
 	    // Eliminar el producto encontrado
 	    productRepository.delete(existingProduct);
-	}	
+	}
+	
+	@Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll(); 
+    }
 
 }
