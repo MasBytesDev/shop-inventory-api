@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import sv.com.masbytes.shopinv.exception.ProductNotFoundException;
 import sv.com.masbytes.shopinv.model.Product;
 import sv.com.masbytes.shopinv.service.ProductService;
 
@@ -28,46 +27,40 @@ public class ProductController {
 		this.productService = productService;
 	}
 
+	// Obtener todos los productos
 	@GetMapping
 	public List<Product> getAllProducts() {
 		return productService.getAllProducts();
 	}
 
+	// Obtener producto por productCode
 	@GetMapping("/{productCode}")
 	public ResponseEntity<Product> getProductByCode(@PathVariable String productCode) {
 		return productService.getProductByCode(productCode).map(product -> new ResponseEntity<>(product, HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
+	// Crear un nuevo producto
 	@PostMapping
 	public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+		// Intentamos crear el producto
 		Product createdProduct = productService.createProduct(product);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
 	}
 
+	// Actualizar un producto
 	@PutMapping("/{productCode}")
 	public ResponseEntity<Product> updateProduct(@PathVariable String productCode,
 			@RequestBody Product updatedProduct) {
-		try {
-			// Llamamos al servicio para actualizar el producto
-			Product updated = productService.updateProduct(productCode, updatedProduct);
-
-			// Si todo sale bien, respondemos con el producto actualizado
-			return ResponseEntity.ok(updated);
-		} catch (ProductNotFoundException ex) {
-			// Si el producto no se encuentra, respondemos con un error 404
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-		}
+		Product updated = productService.updateProduct(productCode, updatedProduct);
+		return ResponseEntity.ok(updated);
 	}
 
+	// Eliminar un producto
 	@DeleteMapping("/{productCode}")
 	public ResponseEntity<Void> deleteProduct(@PathVariable String productCode) {
-		try {
-			productService.deleteProductByCode(productCode);
-			return ResponseEntity.noContent().build();
-		} catch (ProductNotFoundException ex) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-		}
+		productService.deleteProductByCode(productCode);
+		return ResponseEntity.noContent().build();
 	}
 
 }
